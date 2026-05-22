@@ -108,7 +108,7 @@ class PKUserRegistration(SingletonMixin, metaclass=SingletonType):
             PKPikey.removeSavedFile(f"{PKUserRegistration().userID}")
             max_retries = 5
             for retry in range(max_retries):
-                resp = Utility.tools.tryFetchFromServer(cache_file=f"{PKUserRegistration().userID}.pdf",directory="results/Data",hideOutput=False, branchName="SubData", no_cache=True)
+                resp = Utility.tools.tryFetchFromServer(cache_file=f"{PKUserRegistration().userID}.pdf",directory="results/Data",hideOutput=False, branchName="refs/heads/SubData", no_cache=True)
                 if resp is not None and resp.status_code == 200:
                     # success
                     break
@@ -130,11 +130,11 @@ class PKUserRegistration(SingletonMixin, metaclass=SingletonType):
                 f.write(resp.content)
             if not PKPikey.openFile(f"{PKUserRegistration().userID}.pdf",PKUserRegistration().otp):
                 PKAnalyticsService().track_error(error_type="validateTokenError", error_message=f"Invalid OTP for user {PKUserRegistration().userID}", context=f"PKUserRegistration.validateToken:ValidationResult.BadOTP:{PKUserRegistration().userID}")
-                if retrialCount <= 3:
-                    sleep(2)
-                    return PKUserRegistration.validateToken(retrialCount=retrialCount+1)
-                PKUserRegistration.resetSavedUserCreds()
-                return False, ValidationResult.BadOTP
+                # if retrialCount <= 3:
+                #     sleep(2)
+                #     return PKUserRegistration.validateToken(retrialCount=retrialCount+1)
+                # PKUserRegistration.resetSavedUserCreds()
+                # return False, ValidationResult.BadOTP
             
             PKUserRegistration.savedUserCreds()
             os.environ["USER_ID"] = str(PKUserRegistration().userID)
