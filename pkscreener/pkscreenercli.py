@@ -593,6 +593,7 @@ class LoggerSetup:
             trace=trace,
             log_file_path=log_file_path,
             filter=None,
+            selective_debug= False if "PK_DEBUG_ALL" in os.environ.keys() else True
         )
         debug_config_path = os.path.join(Archiver.get_user_data_dir(), "debug_config.ini")
         if os.path.exists(debug_config_path) and os.path.isfile(debug_config_path):
