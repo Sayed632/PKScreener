@@ -127,8 +127,36 @@ level1_P_MenuDict = {
     "2": "Define my custom Piped Scanner",
     "3": "Run Piped Scans Saved So Far",
     "4": "Predefined Piped Scanners for My Watchlist",
+    "5": "Profitable & Realistic Scanners",
     "M": "Back to the Top/Main menu",
 }
+# ----------------------------------------------------------------------
+# Sub‑menu for "Profitable & Realistic Scanners"
+# ----------------------------------------------------------------------
+level2_P_Profitable_MenuDict = {
+    "1": "Swing Entry – Volatility Contraction Breakout",
+    "2": "Breakout with Pullback Confirmation",
+    "3": "Oversold Reversal Setup",
+    "4": "Trend Continuation (Long)",
+    "5": "Short Sell (Bearish)",
+    "6": "Intraday Momentum Breakout",
+    "M": "Back to the Top/Main menu",
+}
+
+PROFITABLE_SCAN_VALUES = [
+    # 1: Volume | Momentum | VCP (Minervini) | ATR Trailing Stop (Buy) | Strong Buy
+    "--systemlaunched -a y -e -o 'X:12:9:2.5:>|X:0:31:>|X:0:7:8:>|X:12:30:1:>|X:0:44:'",
+    # 2: 52‑week high approaching | Bullish 10‑day high breakout | Price Action (BullCross 20EMA) | ATR Cross | Volume surge
+    "--systemlaunched -a y -e -o 'X:12:49:>|X:0:48:>|X:0:40:1:2:>|X:0:27:>|X:0:9:2.5:'",
+    # 3: RSI <30 | NR4 | Bullish Candlestick Pattern (Hammer) | Super Gainers | Strong Buy
+    "--systemlaunched -a y -e -o 'X:12:5:0:30:i 1m:>|X:0:6:6:>|X:0:7:7:1:>|X:0:42:15:>|X:0:44:'",
+    # 4: High Momentum | ATR Trailing Stop (Buy) | BullCross 20EMA | Volume gainers | 52‑week high breakout (today)
+    "--systemlaunched -a y -e -o 'X:12:31:>|X:0:30:1:>|X:0:7:9:5:>|X:0:9:2.5:>|X:0:17:'",
+    # 5: 52‑week low breakout | Death Cross (50/200 SMA) | MACD Histogram below 0 | Strong Sell | High volume on down day
+    "--systemlaunched -a y -e -o 'X:12:15:>|X:0:7:3:0.008:2:>|X:0:19:>|X:0:45:>|X:0:9:2.5:'",
+    # 6: Intraday Bid/Ask Build‑up | Bullish 10‑day high breakout (intraday) | High Momentum | ATR Cross (15m) | Volume surge (5x avg)
+    "--systemlaunched -a y -e -o 'X:12:29:>|X:0:48:i 5m:>|X:0:31:i 5m:>|X:0:27:i 15m:>|X:0:9:5:'",
+]
 LEVEL_1_DATA_DOWNLOADS = {
     "D": "Download Daily OHLCV Data for the Past Year",
     "I": "Download Intraday OHLCV Data for the Last Trading Day",
@@ -1124,7 +1152,22 @@ class menus:
                                                          parent=selectedMenu,
                                                          checkUpdate=False)
                 elif selectedMenu.parent.menuKey in ["P"]:
-                    return self.renderMenuFromDictionary(dict=level2_P_MenuDict,
+                    if selectedMenu.menuKey == "5":
+                        return self.renderMenuFromDictionary(
+                            dict=level2_P_Profitable_MenuDict,
+                            exceptionKeys=["M"],
+                            coloredValues=["1"],
+                            defaultMenu="1",
+                            skip=skip,
+                            asList=asList,
+                            optionText=f"  [+]{self.addl_option_text} Select a profitable scanner:",
+                            renderStyle=renderStyle or MenuRenderStyle.TWO_PER_ROW,
+                            parent=selectedMenu,
+                            checkUpdate=False,
+                            subOnly=PREDEFINED_SCAN_MENU_KEYS   # or use the keys of level2_P_Profitable_MenuDict (excluding "M")
+                        )
+                    else:
+                        return self.renderMenuFromDictionary(dict=level2_P_MenuDict,
                                                          exceptionKeys=["M"],
                                                          coloredValues=(["1"] if not asList else []),
                                                          defaultMenu="1",

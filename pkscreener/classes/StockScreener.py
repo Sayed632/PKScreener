@@ -943,7 +943,7 @@ class StockScreener:
         elif executeOption == 48:
             isValid = screener.find10DaysHighBreakout(fullData, screeningDictionary, saveDictionary)
         elif executeOption == 49:
-            isValid = screener.find52WeekHighApproachingBreakout(fullData, screeningDictionary, saveDictionary)
+            isValid = screener.findApproaching52WeekHigh(fullData, screeningDictionary, saveDictionary)
         return isValid        
                     
     def performBasicVolumeChecks(self, executeOption, volumeRatio, screeningDictionary, saveDictionary, processedData, configManager, screener):

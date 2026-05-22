@@ -4132,7 +4132,7 @@ class ScreeningStatistics:
         existingSave = saveDict.get(key)
         existingScreen = f"{existingScreen}, " if (existingScreen is not None and len(existingScreen) > 0) else ""
         existingSave = f"{existingSave}, " if (existingSave is not None and len(existingSave) > 0) else ""
-        return existingScreen, existingSave
+        return existingScreen.replace("  "," "), existingSave.replace(" "," ")
 
     def findFibonacciRetracement(self, df, lookback_periods=None, threshold_pct=0.01,
                              high_col='high', low_col='low', close_col='close'):
@@ -5163,7 +5163,7 @@ class ScreeningStatistics:
         # Let's get the large deals for the stock
         try:
             dealsInfo = ""
-            symbolKeys = ["Ⓑ","Ⓛ","Ⓢ"]
+            symbolKeys = ["Ⓑ","Ⓛ","Ⓢ"] # Bulk, Block/Large and Short deals
             largeDealsData, filePath, modifiedDateTime = Archiver.findFileInAppResultsDirectory(directory=Archiver.get_user_data_dir(), fileName="large_deals.json")
             dealsFileSize = os.stat(filePath).st_size if os.path.exists(filePath) else 0
             if dealsFileSize > 0 and len(largeDealsData) > 0:
@@ -5187,15 +5187,15 @@ class ScreeningStatistics:
         saved = self.findCurrentSavedValue(screenDict,saveDict,"Trend")
         decision_scr = (colorText.GREEN if isUptrend else (colorText.FAIL if isDowntrend else colorText.WARN)) + f"{decision}" + colorText.END
         dma50decision_scr = (colorText.GREEN if is50DMAUptrend else (colorText.FAIL if is50DMADowntrend else colorText.WARN)) + f"{dma50decision}" + colorText.END
-        saveDict["Trend"] = f"{saved[1]} {decision} {dma50decision} {mf}{dealsInfo}"
+        saveDict["Trend"] = f"{saved[1]} {decision}{dma50decision} {mf}{dealsInfo}"
         for symbol in symbolKeys:
             dealParts = dealsInfo.split(" ")
             dealPartsRefined = []
             for dealPart in dealParts:
                 dealPart = dealPart.replace(symbol,(colorText.GREEN+symbol+colorText.END) if ("(B)" in dealPart) else ((colorText.FAIL+symbol+colorText.END) if ("(S)" in dealPart) else symbol))
                 dealPartsRefined.append(dealPart)
-            dealsInfo = " ".join(dealPartsRefined).strip()
-        screenDict["Trend"] = f"{saved[0]} {decision_scr} {dma50decision_scr} {mfs}{dealsInfo}"
+            dealsInfo = f' {" ".join(dealPartsRefined).strip()}'
+        screenDict["Trend"] = f"{saved[0].strip()} {decision_scr}{dma50decision_scr}{mfs}{dealsInfo}".replace("   "," ").replace("  "," ")
         saveDict["MFI"] = mf_inst_ownershipChange
         screenDict["MFI"] = mf_inst_ownershipChange
         return isUptrend, mf_inst_ownershipChange, fairValueDiff
@@ -6450,6 +6450,8 @@ class ScreeningStatistics:
                     return True
         except KeyboardInterrupt: # pragma: no cover
             raise KeyboardInterrupt
+        except IndexError:
+            pass
         except Exception as e:  # pragma: no cover
             # ValueError: operands could not be broadcast together with shapes (20,) (26,)
             # File "/opt/homebrew/lib/python3.11/site-packages/advanced_ta/LorentzianClassification/Classifier.py", line 186, in __init__
