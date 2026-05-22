@@ -91,6 +91,8 @@ jobs:
         ref: ${{ inputs.branch-name }}
         # repository: pkjmesra/PKScreener
         # token: ${{secrets.GITHUB_TOKEN}}
+        persist-credentials: false
+        token: ${{ secrets.CI_PAT }}
 
     - name: Set up Python
       uses: actions/setup-python@v5
