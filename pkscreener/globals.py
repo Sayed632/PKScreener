@@ -242,7 +242,7 @@ def startMarketMonitor(mp_dict, keyboardevent):
         from PKDevTools.classes.NSEMarketStatus import NSEMarketStatus
         NSEMarketStatus(mp_dict,keyboardevent).startMarketMonitor()
 
-def finishScreening(downloadOnly, testing, stockDictPrimary, configManager, loadCount, testBuild, screenResults, saveResults, user=None):
+def finishScreening(downloadOnly, testing, stockDictPrimary, configManager, loadCount, testBuild, screenResults, saveResults, user=None, executeOption=-1):
     """
     Complete the screening process by saving/downloading results and sending notifications.
     
@@ -261,10 +261,13 @@ def finishScreening(downloadOnly, testing, stockDictPrimary, configManager, load
         None
     """
     global defaultAnswer, menuChoiceHierarchy, userPassedArgs, selectedChoice
-    if "RUNNER" not in os.environ.keys() or downloadOnly:
+    download_job = ("RUNNER" in os.environ.keys()) and (downloadOnly or PKDateUtilities.currentDateTime().weekday() >= 5 and executeOption==0)
+    if download_job:
+        print("Running in download job mode...")
+    if "RUNNER" not in os.environ.keys() or downloadOnly or download_job:
         # There's no need to prompt the user to save xls report or to save data locally.
         # This scan must have been triggered by github workflow by a user or scheduled job
-        saveDownloadedData(downloadOnly, testing, stockDictPrimary, configManager, loadCount)
+        saveDownloadedData(download_job, testing, stockDictPrimary, configManager, loadCount)
     if not testBuild and not downloadOnly and not testing and ((userPassedArgs is not None and "|" not in userPassedArgs.options) or userPassedArgs is None):
         saveNotifyResultsFile(
             screenResults, saveResults, defaultAnswer, menuChoiceHierarchy, user=user
@@ -1739,6 +1742,7 @@ def main(userArgs=None, optionalFinalOutcome_df=None):
                 screenResults,
                 saveResults,
                 user,
+                executeOption = executeOption
             )
 
         if menuOption == "B":
