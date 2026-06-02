@@ -812,7 +812,8 @@ jobs:
       run: |
         ${{ inputs.prerequisites }}
         # pip install libsql
-        /home/runner/work/PKScreener/PKScreener/pkscreenercli_x64.bin ${{ inputs.params }}
+        export PK_DEBUG_ALL=1
+        /home/runner/work/PKScreener/PKScreener/pkscreenercli_x64.bin -l ${{ inputs.params }}
         ${{ inputs.postrun }}
         # cat /home/runner/work/PKScreener/PKScreener/results/Data/pkscreener-logs.txt
         BINARY_NAME="${{ steps.exe-names.outputs.binary_name }}"
@@ -836,7 +837,8 @@ jobs:
       run: |
         ${{ inputs.prerequisites }}
         cd /home/runner/work/PKScreener/PKScreener/
-        python3 pkscreener/pkscreenercli.py ${{ inputs.params }}
+        export PK_DEBUG_ALL=1
+        python3 pkscreener/pkscreenercli.py -l ${{ inputs.params }}
         ${{ inputs.postrun }}
 
     # ============================================================================

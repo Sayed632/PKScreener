@@ -1410,7 +1410,7 @@ def trigger_prod_scans_workflow(repo="PKScreener", owner="pkjmesra",workflow_nam
         )
         
         if result and result.status_code == 204:
-            logger.info("✅ Successfully triggered production scans workflow at 9:30 AM IST")
+            logger.info("✅ Successfully triggered production scans workflow at 9:43 AM IST")
             return True, result
         else:
             logger.error(f"Failed to trigger workflow: {result.status_code if result else 'No response'}")
