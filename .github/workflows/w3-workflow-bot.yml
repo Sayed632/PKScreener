@@ -318,7 +318,8 @@ jobs:
         echo "BOT_EXIT_CODE=$BOT_EXIT_CODE" >> $GITHUB_ENV
 
     - name: Self-trigger for 24x7 continuity
-      if: always() && !cancelled()
+      # && !cancelled()
+      if: always()
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RUNNER : "GitHub_Actions"
