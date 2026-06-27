@@ -1,0 +1,28 @@
+name: My Custom Nifty Scanner
+
+on:
+  workflow_dispatch: # Allows you to run it manually with 1-click
+  schedule:
+    - cron: '30 10 * * 1-5' # Runs automatically Monday-Friday at 4:00 PM IST
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install yfinance pandas requests
+
+      - name: Run Market Scan
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python my_scanner.py
+        
